@@ -1,3 +1,7 @@
 examples/*.pdf
 examples/*.npy
+examples/output/*
 *.pyc
+build/
+plot_test_outputs/
+fastpt/core/outputs/
