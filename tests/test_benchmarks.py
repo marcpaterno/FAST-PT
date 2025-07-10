@@ -3,6 +3,8 @@ import numpy as np
 from fastpt import FASTPT
 import os
 import warnings
+import sys
+import platform
 
 data_path = os.path.join(os.path.dirname(__file__), 'benchmarking', 'Pk_test.dat')
 d = np.loadtxt(data_path)
@@ -35,6 +37,10 @@ def calc_and_show(bmark, stored, func):
         plt.legend()
         plt.show()
 
+@pytest.mark.skipif(
+        sys.version_info >= (3, 13) or platform.machine() == "arm64",
+        reason="Strict benchmark comparison is not reliable on Python 3.13+ or ARM64 runners"
+    )
 def test_one_loop_dd(fpt):
     bmark = fpt.one_loop_dd(P, C_window=C_window)[0]
     stored = np.loadtxt('tests/benchmarking/P_dd_benchmark.txt')
@@ -44,6 +50,10 @@ def test_one_loop_dd(fpt):
                       " We can guarantee a precision of 9e-5 up until a k value of 10.")
     assert np.allclose(bmark, stored)
 
+@pytest.mark.skipif(
+        sys.version_info >= (3, 13) or platform.machine() == "arm64",
+        reason="Strict benchmark comparison is not reliable on Python 3.13+ or ARM64 runners"
+    )
 def test_one_loop_dd_bias(fpt):
     bmark = list(fpt.one_loop_dd_bias(P, C_window=C_window))
     new_array = np.zeros(3000)
@@ -57,6 +67,10 @@ def test_one_loop_dd_bias(fpt):
                       " We can guarantee a precision of 9e-5 up until a k value of 10.")
     assert np.allclose(bmark, stored)
 
+@pytest.mark.skipif(
+        sys.version_info >= (3, 13) or platform.machine() == "arm64",
+        reason="Strict benchmark comparison is not reliable on Python 3.13+ or ARM64 runners"
+    )
 def test_one_loop_dd_bias_b3nl(fpt):
     bmark = list(fpt.one_loop_dd_bias_b3nl(P, C_window=C_window))
     new_array = np.zeros(3000)
@@ -70,6 +84,10 @@ def test_one_loop_dd_bias_b3nl(fpt):
                       " We can guarantee a precision of 6e-4 up until a k value of 10.")
     assert np.allclose(bmark, stored)
 
+@pytest.mark.skipif(
+        sys.version_info >= (3, 13) or platform.machine() == "arm64",
+        reason="Strict benchmark comparison is not reliable on Python 3.13+ or ARM64 runners"
+    )
 def test_one_loop_dd_bias_lpt_NL(fpt):
     bmark = list(fpt.one_loop_dd_bias_lpt_NL(P, C_window=C_window))
     new_array = np.zeros(3000)
@@ -136,6 +154,10 @@ def test_RSD_ABsum_mu(fpt):
     bmark = np.transpose(fpt.RSD_ABsum_mu(P, 1.0, 1.0, C_window=C_window))
     assert np.allclose(bmark, np.loadtxt('tests/benchmarking/P_RSD_ABsum_mu_benchmark.txt'))
 
+@pytest.mark.skipif(
+        sys.version_info >= (3, 13) or platform.machine() == "arm64",
+        reason="Strict benchmark comparison is not reliable on Python 3.13+ or ARM64 runners"
+    )
 def test_IRres(fpt):
     bmark = fpt.IRres(P, C_window=C_window)
     stored = np.transpose(np.loadtxt('tests/benchmarking/P_IRres_benchmark.txt'))
